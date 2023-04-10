@@ -1,0 +1,38 @@
+{% extends "inc/base.html" %}
+{% load static %}
+
+{% block content %}
+
+<div class="full-question">
+  <div class="row">
+    <div class="col-3">
+      <div class="question-avatar">
+        <img src="{% static "img/john-wick.gif" %}" alt="avatar">
+      </div>
+      <div class="row like">
+        <div class="col-3 like-counter"><div class="like-text">1000</div></div>
+        <div class="col-3">
+          <button type="button" class="btn btn-outline-success">Like</button>
+        </div>
+      </div>
+    </div>
+    <div class="col-9">
+      <h2>{{ question.title }}</h2>
+      <div class="question-text">{{ question.text }}</div>
+      <div class="row">
+        <div class="col-12">Tags: {% include "inc/tag_item.html" %}</div>
+      </div>
+    </div>
+  </div>
+</div>
+<hr>
+<h2>Answers</h2>
+{% for answer in answers %}
+  {% include "inc/answer_item.html" %}
+{% endfor %}
+<hr>
+<div class="form-group mb-5">
+  <textarea class="form-control" id="TextQuestion1" rows="4" placeholder="Enter your answer here."></textarea>
+</div>
+
+{% endblock content %}

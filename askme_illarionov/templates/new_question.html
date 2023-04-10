@@ -1,0 +1,36 @@
+{% extends "inc/base.html" %}
+
+{% block content %}
+<div class="new-question">
+  <h1>New question</h1>
+  <div class="row">
+    <div class="col-12">
+      <form>
+        <div class="form-group row mb-5">
+          <label for="TitleQuestion" class="col-sm-2 col-form-label">Title</label>
+          <div class="col-sm-10">
+            <input type="email" class="form-control" id="Title1" placeholder="Title">
+          </div>
+        </div>
+        <div class="form-group row mb-5">
+          <label for="TextQuestion" class="col-sm-2 col-form-label">Text</label>
+          <div class="col-sm-10">
+            <textarea class="form-control" id="TextQuestion1" rows="7"></textarea>
+          </div>
+        </div>
+        <div class="form-group row mb-5">
+          <label for="TagsQuestion" class="col-sm-2 col-form-label">Tags</label>
+          <div class="col-sm-10">
+            <input type="TagsQuestion" class="form-control" id="Tags1" placeholder="Tags">
+          </div>
+        </div>
+        <div class="form-group row">
+          <div class="col-sm-10">
+            <button type="submit" class="btn btn-primary">ASK!</button>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+{% endblock content %}

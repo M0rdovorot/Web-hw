@@ -1,3 +1,6 @@
+{% load static %}
+
+
 <!doctype html>
 <html lang="en" class="h-100" data-bs-theme="auto">
   <head><script src="/docs/5.3/assets/js/color-modes.js"></script>
@@ -5,10 +8,10 @@
     <meta charset="utf-8">
     <title>Sticky Footer Navbar Template · Bootstrap v5.3</title>
 
-  <link href="../static/css/bootstrap.css" rel="stylesheet" crossorigin="anonymous">
+  <link href="{% static "css/bootstrap.css" %}" rel="stylesheet" crossorigin="anonymous">
 
     <!-- Custom styles for this template -->
-    <link href="../static/css/my.css" rel="stylesheet">
+    <link href="{% static "css/my.css" %}" rel="stylesheet">
   </head>
   <body class="d-flex flex-column h-100">
     <svg xmlns="http://www.w3.org/2000/svg" style="display: none;">
@@ -62,100 +65,19 @@
       </ul>
     </div>
 
+{% include "inc/unauthorized_header.html" %}
 
-<header>
-  <!-- Fixed navbar -->
-  <nav class="navbar navbar-expand-md navbar-dark fixed-top bg-dark">
-    <div class="container-fluid">
-      <div class="collapse navbar-collapse" id="navbarCollapse">
-        <ul class="navbar-nav me-0 mb-2 mb-md-0">
-          <li class="nav-item">
-            <a class="navbar-brand" aria-current="page" href="../tempaltes/index.html">ASKME</a>
-          </li>
-        </ul>
-        <form class="d-flex s" role="search">
-          <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search">
-          <button class="btn btn-outline-success" type="submit">Search</button>
-        </form>
-        <div class="ask ms-auto me-4">
-          <a href="../tempaltes/new_question.html"><button class="btn btn-success" type="submit">ASK!</button></a>
-        </div>
-        <div class="profile">
-          <div>
-            <a class="navbar-brand" href="#"><img src="../static/img/john-wick.gif" alt="" class="d-inline-block"></a>
-            <a class="nickname me-3" href="#">John Wick</a>
-            <a href="../tempaltes/settings.html">Settings</a>
-            <a href="#">Log out</a>
-          </div>
-
-        </div>
-      </div>
-    </div>
-  </nav>
-</header>
 <!-- Begin page content -->
 <main class="flex-shrink-0">
   <div class="container">
+
     <div class="row mt-5">
       <div class="col-9">
 
-        <div class="full-question">
-          <div class="row">
-            <div class="col-3">
-              <div class="question-avatar">
-                <img src="../static/img/john-wick.gif" alt="avatar">
-              </div>
-              <div class="row like">
-                <div class="col-3 like-counter"><div class="like-text">1000</div></div>
-                <div class="col-3">
-                  <button type="button" class="btn btn-outline-success">Like</button>
-                </div>
-              </div>
-            </div>
-            <div class="col-9">
-              <h2>Awesome question 3</h2>
-              <div class="question-text">
-Vestibulum maximus lacus eget odio tincidunt, quis blandit mi porta. Donec vitae nulla quis ipsum vulputate lacinia quis nec lacus. In in tellus lacinia, posuere tortor a, bibendum ante. Aliquam rutrum nunc eu odio consectetur mattis nec vel dui. Quisque pharetra venenatis quam, nec egestas neque ullamcorper sed. Cras rhoncus, leo ac scelerisque mattis, urna lorem finibus nibh, sit amet luctus dolor erat sit amet lorem. Vivamus viverra libero sed est semper cursus. Donec nibh massa, blandit non diam id, finibus tincidunt ante. In id faucibus ante. Nunc rutrum neque eu ante posuere laoreet. Quisque nisl massa, finibus ut rhoncus id, porta id augue. Ut in orci nunc. Aenean nibh mi, blandit a consequat nec, scelerisque eu arcu. Morbi elementum est porttitor purus cursus egestas. Duis varius nulla eget lacus pretium cursus.
+        {% block content %}{% endblock content %}
 
-Donec a mi ante. In efficitur id nunc vel feugiat. Nullam in vestibulum orci. Nulla elementum velit lorem, eu commodo turpis mattis nec. Mauris eu sagittis dui, quis dictum nisi. Maecenas gravida neque arcu, at congue ligula sagittis ullamcorper. Integer fermentum mi pellentesque pulvinar tempus. Proin finibus mattis dui, a elementum purus fringilla at. Nunc dignissim, neque sed consectetur imperdiet, augue lacus imperdiet sem, quis molestie libero elit a ligula. Aenean commodo, turpis quis faucibus aliquet, lacus sem cursus nibh, eget consectetur augue magna pellentesque augue.
-              </div>
-              <div class="row">
-                <div class="col-12">Tags: <a href="#">Standup</a>, <a href="#">Humor</a>, <a href="#">Carlin</a></div>
-              </div>
-            </div>
-          </div>
-        </div>
-        <hr>
-        <div class="answer">
-          <div class="row">
-            <div class="col-3">
-              <div class="answer-avatar">
-                <img src="../static/img/ramadan-kareem-ramadan.gif" alt="avatar">
-              </div>
-              <div class="row like">
-                <div class="col-3 like-counter"><div class="like-text">1011</div></div>
-                <div class="col-3">
-                  <button type="button" class="btn btn-outline-success">Like</button>
-                </div>
-              </div>
-            </div>
-            <div class="col-8">
-              <div class="question-text">Curabitur venenatis, dolor vestibulum feugiat facilisis, erat libero ornare lorem, eu euismod metus leo vitae dolor. Praesent consectetur turpis varius ...</div>
-              <div class="row">
-                <div class="form-check mb-5">
-                  <input type="checkbox" class="form-check-input" id="exampleCheck1">
-                  <label class="form-check-label" for="exampleCheck1">Correct!</label>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-        <hr>
-        <div class="form-group mb-5">
-          <textarea class="form-control" id="TextQuestion1" rows="4" placeholder="Enter your answer here."></textarea>
-        </div>
       </div>
-      <div class="col-3">
+      <div class="col-3 mt-5">
         <h2>Popular Tags</h2>
         <div class="row tags">
           <h3><a href="#">Proin</a> <a href="#">lobortis</a> <a href="#">lacus</a> <a href="#">sed</a> <a href="#">turpis</a> <a href="#">Proin</a> <a href="#">lobortis</a> <a href="#">lacus</a> <a href="#">sed</a> <a href="#">turpis</a></h3>
@@ -172,21 +94,7 @@ Donec a mi ante. In efficitur id nunc vel feugiat. Nullam in vestibulum orci. Nu
       </div>
     </div>
 
-    <nav aria-label="...">
-      <ul class="pagination">
-        <li class="page-item disabled">
-          <a class="page-link" href="#" tabindex="-1">Previous</a>
-        </li>
-        <li class="page-item"><a class="page-link" href="#">1</a></li>
-        <li class="page-item active">
-          <a class="page-link" href="#">2</a>
-        </li>
-        <li class="page-item"><a class="page-link" href="#">3</a></li>
-        <li class="page-item">
-          <a class="page-link" href="#">Next</a>
-        </li>
-      </ul>
-    </nav>
+
 
   </div>
 </main>

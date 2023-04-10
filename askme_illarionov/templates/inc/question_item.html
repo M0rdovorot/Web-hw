@@ -1,0 +1,27 @@
+{% load static %}
+
+<div class="question">
+  <div class="row">
+    <div class="col-3">
+      <div class="question-avatar">
+          <img src="{% static "img/john-wick.gif" %}" alt="avatar">
+      </div>
+      <div class="row like">
+        <div class="col-3 like-counter"><div class="like-text">1000</div></div>
+        <div class="col-3">
+          <button type="button" class="btn btn-outline-success">Like</button>
+        </div>
+      </div>
+    </div>
+    <div class="col-6">
+      <h2><a href="{% url "question" question.id %}">{{ question.title }}</a></h2>
+      <div class="question-text">{{ question.text }}</div>
+      <div class="row">
+        <div class="col-4"><a href="{% url "question" question.id %}">Answers (5)</a></div>
+        <div class="col-8">
+          Tags: {% include "inc/tag_item.html" %}
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,54 @@
+{% extends "inc/base.html" %}
+
+{% block content %}
+<div class="new-question">
+  <h1>Settings</h1>
+  <div class="row">
+    <div class="col-12">
+      <form>
+        <div class="form-group row mb-5">
+          <label for="inputLogin" class="col-sm-2 col-form-label">Login</label>
+          <div class="col-sm-10">
+            <input type="Login" class="form-control" id="inputLogin1" placeholder="Login">
+          </div>
+        </div>
+        <div class="form-group row mb-5">
+          <label for="inputEmail" class="col-sm-2 col-form-label">Email</label>
+          <div class="col-sm-10">
+            <input type="Email" class="form-control" id="inputEmail1" placeholder="Email">
+          </div>
+        </div>
+        <div class="form-group row mb-5">
+          <label for="inputNickname" class="col-sm-2 col-form-label">Nickname</label>
+          <div class="col-sm-10">
+            <input type="Nickname" class="form-control" id="inputNickname1" placeholder="Nickname">
+          </div>
+        </div>
+        <div class="form-group row mb-5">
+          <label for="inputPassword" class="col-sm-2 col-form-label">New password</label>
+          <div class="col-sm-10">
+            <input type="Password" class="form-control" id="inputPassword1" placeholder="New password">
+          </div>
+        </div>
+        <div class="form-group row mb-5">
+          <label for="inputRepeatPassword" class="col-sm-2 col-form-label">Repeat new password</label>
+          <div class="col-sm-10">
+            <input type="Password" class="form-control" id="inputRepeatPassword1" placeholder="Repeat new password">
+          </div>
+        </div>
+        <div class="form-group row mb-5">
+          <label for="UploadAvatar1" class="col-sm-2">Upload avatar</label>
+          <div class="col-sm-10">
+            <input type="file" class="form-control-file" id="UploadAvatar1">
+          </div>
+        </div>
+        <div class="form-group row mb-5">
+          <div class="col-sm-10">
+            <button type="submit" class="btn btn-primary">Save!</button>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+{% endblock content %}

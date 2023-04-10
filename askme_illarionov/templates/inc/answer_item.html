@@ -1,0 +1,26 @@
+{% load static %}
+
+<div class="answer">
+  <div class="row">
+    <div class="col-3">
+      <div class="answer-avatar">
+        <img src="{% static "img/ramadan-kareem-ramadan.gif" %}" alt="avatar">
+      </div>
+      <div class="row like">
+        <div class="col-3 like-counter"><div class="like-text">1011</div></div>
+        <div class="col-3">
+          <button type="button" class="btn btn-outline-success">Like</button>
+        </div>
+      </div>
+    </div>
+    <div class="col-8">
+      <div class="question-text">{{ answer.text }}</div>
+      <div class="row">
+        <div class="form-check mb-5">
+          <input type="checkbox" class="form-check-input" id="exampleCheck1">
+          <label class="form-check-label" for="exampleCheck1">Correct!</label>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
