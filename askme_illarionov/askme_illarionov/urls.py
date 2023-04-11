@@ -19,6 +19,7 @@ from django.urls import path
 from askme import views
 
 urlpatterns = [
+    #path('<int:page>', views.paginate, name='index_page'),
     path('', views.index, name="index"),
     path('admin/', admin.site.urls),
     path('question/<int:question_id>/', views.question, name="question"),
