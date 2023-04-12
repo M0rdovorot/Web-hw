@@ -1,3 +1,4 @@
+import django.db.models
 from django.db import models
 from django.contrib.auth.models import User
 
@@ -34,7 +35,7 @@ class QuestionManager(models.Manager):
         return tuple([question, get_answer_info(answers)])
 
     def get_hot(self):
-        questions = self.order_by('-like')
+        questions = self.annotate(num_likes=django.db.models.Count('like')).order_by('-num_likes')
         return get_question_info(questions)
 
 

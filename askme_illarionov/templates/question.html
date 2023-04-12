@@ -27,10 +27,13 @@
 </div>
 <hr>
 <h2>Answers {{num_answers}}:</h2>
-{% for answer, num_likes in answers %}
+{% for answer, num_likes in page_obj %}
   {% include "inc/answer_item.html" %}
 {% endfor %}
 <hr>
+
+{% include "inc/pagination.html" %}
+
 <div class="form-group mb-5">
   <textarea class="form-control" id="TextQuestion1" rows="4" placeholder="Enter your answer here."></textarea>
 </div>
