@@ -14,7 +14,7 @@ def question(request, question_id):
     if not models.Question.objects.is_correct(question_id):
         return HttpResponseBadRequest()
     tmp_question, answers = models.Question.objects.get_question_and_answers(question_id)
-    context = {'question': tmp_question, 'answers': answers}
+    context = {'question': tmp_question[0], 'num_likes': tmp_question[1], 'num_answers': tmp_question[2], 'answers': answers}
     return render(request, 'question.html', context)
 
 

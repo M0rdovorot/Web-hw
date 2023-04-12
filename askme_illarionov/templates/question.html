@@ -10,7 +10,7 @@
         <img src="{% static "img/john-wick.gif" %}" alt="avatar">
       </div>
       <div class="row like">
-        <div class="col-3 like-counter"><div class="like-text">1000</div></div>
+        <div class="col-3 like-counter"><div class="like-text">{{num_likes}}</div></div>
         <div class="col-3">
           <button type="button" class="btn btn-outline-success">Like</button>
         </div>
@@ -26,8 +26,8 @@
   </div>
 </div>
 <hr>
-<h2>Answers</h2>
-{% for answer in answers %}
+<h2>Answers {{num_answers}}:</h2>
+{% for answer, num_likes in answers %}
   {% include "inc/answer_item.html" %}
 {% endfor %}
 <hr>
