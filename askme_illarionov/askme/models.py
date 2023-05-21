@@ -1,6 +1,6 @@
 import django.db.models
 from django.db import models
-from django.contrib.auth.models import User
+from django.contrib.auth.models import User, AbstractUser
 
 
 def get_question_info(questions):
@@ -35,12 +35,14 @@ class QuestionManager(models.Manager):
         return tuple([question, get_answer_info(answers)])
 
     def get_hot(self):
-        questions = self.annotate(num_likes=django.db.models.Count('like')).order_by('-num_likes')
+        questions = self.alias(num_likes=django.db.models.Count('like')).order_by('-num_likes')
         return get_question_info(questions)
 
+    def get_question_likes(self, question_id):
+        return self.get(id__exact=question_id).likequestion_set.all().count()
 
 class Question(models.Model):
-    tags = models.ManyToManyField('Tag', blank=True, null=True, default=None)
+    tags = models.ManyToManyField('Tag', blank=True, default=None)
     title = models.CharField(max_length=255)
     text = models.TextField()
     STATUS_CHOICES = [
@@ -85,6 +87,7 @@ class TagManager(models.Manager):
         return get_question_info(questions)
 
 
+
 class Tag(models.Model):
     name = models.CharField(max_length=255)
 
@@ -94,13 +97,16 @@ class Tag(models.Model):
         return self.name
 
 
-class Profile(models.Model):
-    user = models.OneToOneField(User, on_delete=models.CASCADE)
-    name = models.CharField(max_length=255)
-    avatar = models.ImageField(null=True)
+class Profile(AbstractUser):
+    avatar = models.ImageField(blank=True, null=True, upload_to='avatars/%Y/%m/%d/', default=None)
 
 
 class Like(models.Model):
     user = models.ForeignKey('Profile', on_delete=models.CASCADE)
     question = models.ForeignKey('Question', on_delete=models.CASCADE, null=True)
     answer = models.ForeignKey('Answer', on_delete=models.CASCADE, null=True)
+
+
+class LikeQuestion(models.Model):
+    question = models.ForeignKey('Question', on_delete=models.CASCADE)
+    profile = models.ForeignKey('Profile', on_delete=models.CASCADE)

@@ -1,36 +1,94 @@
-from django.shortcuts import render
+from django.forms import model_to_dict
+from django.shortcuts import render, redirect
+from django.views.decorators.http import require_http_methods, require_POST
+
 from . import models
-from django.http import HttpResponse, HttpResponseBadRequest
+from django.http import HttpResponse, HttpResponseBadRequest, JsonResponse
 from django.core.paginator import Paginator
+from django.contrib import auth
+from django.contrib.auth.decorators import login_required
+from django.contrib.auth.models import User
+from django.contrib.auth import login
+from django.urls import reverse, resolve
+
+from .forms import LoginForm, RegistrationForm, SettingsForm, AskForm, AnswerForm
+import os
+
+from .models import Profile
+
+os.environ.setdefault("DJANGO_SETTINGS_MODULE", "askme_illarionov.askme_illarionov.settings")
 
 
-def paginate(object_list, request, html, per_page=5, context=dict()):
+def paginate(object_list, request, html, per_page=5, context=dict(), is_last=False):
     paginator = Paginator(object_list, per_page)
-    page_number = request.GET.get('page')
+    if is_last:
+        page_number = int(len(object_list) / per_page) + 1
+    else:
+        page_number = request.GET.get('page')
     page_obj = paginator.get_page(page_number)
     context['page_obj'] = page_obj
     return render(request, html, context)
 
 
+@login_required(login_url='login/', redirect_field_name="continue")
 def index(request):
     new_questions = models.Question.objects.get_new_questions()
-    return paginate(new_questions, request, 'index.html', 5)
+    context = {'user': request.user}
+    return paginate(new_questions, request, 'index.html', 5, context)
 
 
 def question(request, question_id):
     if not models.Question.objects.is_correct(question_id):
         return HttpResponseBadRequest()
+
     tmp_question, answers = models.Question.objects.get_question_and_answers(question_id)
+    if request.method == 'GET':
+        answer_form = AnswerForm()
+    elif request.method == 'POST':
+        answer_form = AnswerForm(request.POST)
+        if answer_form.is_valid():
+            a = answer_form.save(request.user, tmp_question[0])
+            a.save()
+            tmp_question, answers = models.Question.objects.get_question_and_answers(question_id)
+            context = {'question': tmp_question[0], 'num_likes': tmp_question[1], 'num_answers': tmp_question[2]}
+            context['form'] = answer_form
+            return paginate(answers, request, 'question.html', 3, context, True)
+        answer_form.add_error(None, 'Answer saving error')
+
     context = {'question': tmp_question[0], 'num_likes': tmp_question[1], 'num_answers': tmp_question[2]}
+    context['form'] = answer_form
     return paginate(answers, request, 'question.html', 3, context)
 
 
+@login_required(login_url='login/', redirect_field_name="continue")
 def ask(request):
-    return render(request, 'new_question.html')
+    if request.method == 'GET':
+        ask_form = AskForm()
+    elif request.method == 'POST':
+        ask_form = AskForm(request.POST)
+        if ask_form.is_valid():
+            q = ask_form.save(request.user)
+            q.save()
+            return redirect(reverse('question', kwargs={'question_id': q.id}))
+        ask_form.add_error(None, 'Question saving error')
+    return render(request, 'new_question.html', context={'form': ask_form})
 
 
+@login_required(login_url='login/', redirect_field_name="continue")
+@require_http_methods(['GET', 'POST'])
 def settings(request):
-    return render(request, 'settings.html')
+    if request.method == 'GET':
+        data = model_to_dict(request.user)
+        settings_form = SettingsForm(initial=data)
+    elif request.method == 'POST':
+        settings_form = SettingsForm(request.POST, files=request.FILES, instance=request.user) #new instance and file
+        if settings_form.is_valid():
+            user = settings_form.save()
+            if user:
+                user.save()
+                return redirect(reverse('index'))
+            settings_form.add_error(None, 'User editing error')
+    return render(request, 'settings.html', context={'form': settings_form, 'user': request.user})
 
 
 def hot(request):
@@ -46,19 +104,57 @@ def tag(request, *args, **kwargs):
 
 
 def signup(request):
-    return render(request, 'registration.html')
+    if request.method == 'GET':
+        registration_form = RegistrationForm()
+    elif request.method == 'POST':
+        registration_form = RegistrationForm(request.POST)
+        if registration_form.is_valid():
+            user = registration_form.save()
+            if user:
+                user.save()
+                return redirect(reverse('index'))
+            registration_form.add_error(None, 'User saving error')
+    return render(request, 'registration.html', context={'form': registration_form})
 
 
-def login(request):
-    return render(request, 'login.html')
+def log_in(request):
+    if request.method == 'GET':
+        login_form = LoginForm()
+    elif request.method == 'POST':
+        login_form = LoginForm(request.POST)
+        if login_form.is_valid():
+            user = auth.authenticate(request=request, **login_form.cleaned_data)
+            if user:
+                login(request, user)
+                if request.GET.__contains__('continue') and request.GET.get('continue') != '':
+                    return redirect(request.GET.get('continue'))
+                else:
+                    return redirect(reverse('index'))
+            login_form.add_error(None, "Invalid username or password")
+
+    return render(request, 'login.html', context={'form': login_form})
 
 
-"""
-def paginate(request):
-    object_list = models..all()
-    paginator = Paginator(object_list, 3)
+def logout(request):
+    auth.logout(request)
+    return redirect(reverse("index"))
 
-    page_number = request.GET.get('page')
-    page_obj = paginator.get_page(page_number)
-    return render(request, 'index.html', {'page_obj': page_obj})
-"""
+
+@login_required(login_url='login/', redirect_field_name="continue")
+@require_POST
+def question_like(request):
+    question_id = request.POST['question_id']
+    print(question_id)
+
+    #check id
+    q = models.Question.objects.get(id=question_id)
+    likes = models.Question.objects.get_question_likes(question_id)
+    print(likes)
+    #transaction????
+
+    like = models.LikeQuestion.objects.create(question=q, profile=request.user)#profile???
+    like.save()
+    q.save()
+    return JsonResponse({
+        'likes': likes
+    })

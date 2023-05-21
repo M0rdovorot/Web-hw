@@ -16,17 +16,18 @@ class Command(BaseCommand):
         questions = []
         answers = []
         likes = []
-        new_row_id = models.User.objects.all().count() + 1
-        for i in range(new_row_id, ratio + new_row_id):
-            user = models.User.objects.create_user(id=i, username=f'User {i}', email=None, password=None)
-            users.append(user)
+        new_row_id = models.Profile.objects.all().count() + 1
+        # for i in range(new_row_id, ratio + new_row_id):
+        #     user = models.User.objects.create_user(id=i, username=f'User {i}', email=None, password=None)
+        #     users.append(user)
 
         for i in range(new_row_id, ratio + new_row_id):
-            profile = models.Profile(id=i, user=users[i - new_row_id], name=f'User {i}', avatar=None)
+            profile = models.Profile.objects.create_user(id=i, username=f'User {i}', password=f'12345', avatar=None)
+            profile.save()
             profiles.append(profile)
-        models.Profile.objects.bulk_create(profiles)
+        # models.Profile.objects.bulk_create(profiles)
 
-        tag_new_row_id = models.User.objects.all().count() + 1
+        tag_new_row_id = models.Profile.objects.all().count() + 1
         for i in range(tag_new_row_id, ratio + tag_new_row_id):
             tag = models.Tag(id=i, name=f'{i}')
             tags.append(tag)

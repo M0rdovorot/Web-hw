@@ -100,3 +100,12 @@ h1 > a{
 
 .new-question{
 }
+
+#settings-avatar {
+    width: 100 px;
+    height: 100 px;
+    object-fit: cover;
+}
+.like-btn:after{
+    content: attr(data-count);
+}

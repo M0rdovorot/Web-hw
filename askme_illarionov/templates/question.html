@@ -1,5 +1,10 @@
 {% extends "inc/base.html" %}
+
 {% load static %}
+{% load bootstrap5 %}
+{% bootstrap_css %}
+{% bootstrap_javascript %}
+{% bootstrap_messages %}
 
 {% block content %}
 
@@ -33,9 +38,11 @@
 <hr>
 
 {% include "inc/pagination.html" %}
-
-<div class="form-group mb-5">
-  <textarea class="form-control" id="TextQuestion1" rows="4" placeholder="Enter your answer here."></textarea>
-</div>
+<!--????-->
+<form novalidate action="/question/{{ question.id }}/" method="post">
+  {% csrf_token %}
+  {% bootstrap_form form %}
+  <button type="submit" class="btn btn-primary">ASK!</button>
+</form>
 
 {% endblock content %}
