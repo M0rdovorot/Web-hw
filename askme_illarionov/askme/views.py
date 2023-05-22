@@ -38,8 +38,13 @@ def index(request):
 
 
 def question(request, question_id):
-    if not models.Question.objects.is_correct(question_id):
-        return HttpResponseBadRequest()
+    # if not models.Question.objects.is_correct(question_id):
+    #     return HttpResponseBadRequest()
+    try:
+        models.Question.objects.get(id__exact=question_id)
+    except models.Question.DoesNotExist:
+        return HttpResponseBadRequest("No such question")
+
 
     tmp_question, answers = models.Question.objects.get_question_and_answers(question_id)
     if request.method == 'GET':
@@ -50,12 +55,11 @@ def question(request, question_id):
             a = answer_form.save(request.user, tmp_question[0])
             a.save()
             tmp_question, answers = models.Question.objects.get_question_and_answers(question_id)
-            context = {'question': tmp_question[0], 'num_likes': tmp_question[1], 'num_answers': tmp_question[2]}
+            context = {'question': tmp_question[0], 'num_answers': tmp_question[1]}
             context['form'] = answer_form
             return paginate(answers, request, 'question.html', 3, context, True)
         answer_form.add_error(None, 'Answer saving error')
-
-    context = {'question': tmp_question[0], 'num_likes': tmp_question[1], 'num_answers': tmp_question[2]}
+    context = {'question': tmp_question[0], 'num_answers': tmp_question[1]}
     context['form'] = answer_form
     return paginate(answers, request, 'question.html', 3, context)
 
@@ -103,11 +107,12 @@ def tag(request, *args, **kwargs):
     return paginate(questions, request, 'tag.html', 5, context)
 
 
+@require_http_methods(['GET', 'POST'])
 def signup(request):
     if request.method == 'GET':
         registration_form = RegistrationForm()
     elif request.method == 'POST':
-        registration_form = RegistrationForm(request.POST)
+        registration_form = RegistrationForm(request.POST, files=request.FILES)
         if registration_form.is_valid():
             user = registration_form.save()
             if user:
@@ -117,6 +122,7 @@ def signup(request):
     return render(request, 'registration.html', context={'form': registration_form})
 
 
+@require_http_methods(['GET', 'POST'])
 def log_in(request):
     if request.method == 'GET':
         login_form = LoginForm()
@@ -146,15 +152,86 @@ def question_like(request):
     question_id = request.POST['question_id']
     print(question_id)
 
-    #check id
-    q = models.Question.objects.get(id=question_id)
-    likes = models.Question.objects.get_question_likes(question_id)
-    print(likes)
-    #transaction????
+    try:
+        q = models.Question.objects.get(id=question_id)
+    except models.Question.DoesNotExist:
+        return HttpResponseBadRequest("No such answer")
 
-    like = models.LikeQuestion.objects.create(question=q, profile=request.user)#profile???
-    like.save()
-    q.save()
-    return JsonResponse({
-        'likes': likes
-    })
+    try:
+        like = models.LikeQuestion.objects.get(profile=request.user, question_id=question_id)
+        like.delete()
+        q.rating -= 1
+        q.save()
+        return JsonResponse({
+            'likes': q.rating
+        })
+    except models.LikeQuestion.DoesNotExist:
+        q.rating += 1
+        #transaction????
+        like = models.LikeQuestion.objects.create(question=q, profile=request.user)#profile???
+        like.save()
+        q.save()
+        print(q.rating)
+        return JsonResponse({
+            'likes': q.rating
+        })
+
+
+@login_required(login_url='login/', redirect_field_name="continue")
+@require_POST
+def answer_like(request):
+    answer_id = request.POST['answer_id']
+    print(answer_id)
+
+    #check id
+    try:
+        a = models.Answer.objects.get(id=answer_id)
+    except models.Answer.DoesNotExist:
+        return HttpResponseBadRequest("No such answer")
+
+    try:
+        like = models.LikeAnswer.objects.get(profile=request.user, answer_id=answer_id)
+        like.delete()
+        a.rating -= 1
+        a.save()
+        return JsonResponse({
+            'likes': a.rating
+        })
+    except models.LikeAnswer.DoesNotExist:
+        #transaction????
+        a.rating += 1
+        like = models.LikeAnswer.objects.create(answer=a, profile=request.user)#profile???
+        like.save()
+        a.save()
+        print(a.rating)
+        return JsonResponse({
+            'likes': a.rating
+        })
+
+
+@login_required(login_url='login/', redirect_field_name="continue")
+@require_POST
+def mark_as_correct(request):
+    answer_id = request.POST['answer_id']
+    print(answer_id)
+
+    #check id
+    try:
+        a = models.Answer.objects.get(id=answer_id)
+    except models.Answer.DoesNotExist:
+        return HttpResponseBadRequest("No such answer")
+
+    if a.status == 'c':
+        a.status = 'u'
+        a.save()
+        return JsonResponse({
+            'status': a.status
+        })
+    else:
+        #transaction????
+        a.status = 'c'
+        a.save()
+        print(a.status)
+        return JsonResponse({
+            'status': a.status
+        })

@@ -6,21 +6,21 @@ from django.contrib.auth.models import User, AbstractUser
 def get_question_info(questions):
     questions_and_info = []
     for question in questions:
-        questions_and_info.append(tuple([question, question.like_set.all().count(), question.answer_set.all().count]))
+        questions_and_info.append(tuple([question, question.answer_set.all().count]))
     return questions_and_info
 
 
-def get_answer_info(answers):
-    answers_and_info = []
-    for answer in answers:
-        answers_and_info.append(tuple([answer, answer.like_set.all().count()]))
-    return answers_and_info
+# def get_answer_info(answers):
+#     answers_and_info = []
+#     for answer in answers:
+#         answers_and_info.append(answer)
+#     return answers_and_info
 
 
 class QuestionManager(models.Manager):
 
     def is_correct(self, question_id):
-        if question_id > len(self.all()) or question_id < 0:
+        if self.filter(id__exact=question_id).exists():
             return False
         return True
 
@@ -32,14 +32,15 @@ class QuestionManager(models.Manager):
         question = self.get(id__exact=question_id)
         question = get_question_info([question])[0]
         answers = question[0].answer_set.all()
-        return tuple([question, get_answer_info(answers)])
+        return tuple([question, answers])
 
     def get_hot(self):
-        questions = self.alias(num_likes=django.db.models.Count('like')).order_by('-num_likes')
+        questions = self.alias(num_likes=django.db.models.Count('likequestion')).order_by('-num_likes')
         return get_question_info(questions)
 
-    def get_question_likes(self, question_id):
-        return self.get(id__exact=question_id).likequestion_set.all().count()
+    # def get_question_likes(self, question_id):
+    #     return self.get(id__exact=question_id).likequestion_set.all().count()
+
 
 class Question(models.Model):
     tags = models.ManyToManyField('Tag', blank=True, default=None)
@@ -50,9 +51,9 @@ class Question(models.Model):
         ('c', 'closed')
     ]
     status = models.CharField(max_length=1, choices=STATUS_CHOICES)
-    posted_time = models.DateTimeField(auto_now=True, auto_now_add=False)
+    posted_time = models.DateTimeField(auto_now=False, auto_now_add=True)
     profile = models.ForeignKey('Profile', on_delete=models.CASCADE, null=True)
-
+    rating = models.IntegerField(default=0)
     objects = QuestionManager()
 
     def __str__(self):
@@ -73,9 +74,10 @@ class Answer(models.Model):
         ('c', 'correct'),
         ('u', 'uncorrect')
     ]
-    status = models.CharField(max_length=1, choices=STATUS_CHOICES)
+    status = models.CharField(max_length=1, choices=STATUS_CHOICES, default='u')
     posted_time = models.DateTimeField(auto_now=True)
     profile = models.ForeignKey('Profile', on_delete=models.CASCADE, null=True)
+    rating = models.IntegerField(default=0)
 
     objects = AnswerManager()
 
@@ -98,15 +100,20 @@ class Tag(models.Model):
 
 
 class Profile(AbstractUser):
-    avatar = models.ImageField(blank=True, null=True, upload_to='avatars/%Y/%m/%d/', default=None)
+    avatar = models.ImageField(blank=True, null=True, upload_to='avatars/%Y/%m/%d/', default="DefaultAvatar.jpeg")
 
 
-class Like(models.Model):
-    user = models.ForeignKey('Profile', on_delete=models.CASCADE)
-    question = models.ForeignKey('Question', on_delete=models.CASCADE, null=True)
-    answer = models.ForeignKey('Answer', on_delete=models.CASCADE, null=True)
+# class Like(models.Model):
+#     user = models.ForeignKey('Profile', on_delete=models.CASCADE)
+#     question = models.ForeignKey('Question', on_delete=models.CASCADE, null=True)
+#     answer = models.ForeignKey('Answer', on_delete=models.CASCADE, null=True)
 
 
 class LikeQuestion(models.Model):
     question = models.ForeignKey('Question', on_delete=models.CASCADE)
+    profile = models.ForeignKey('Profile', on_delete=models.CASCADE)
+
+
+class LikeAnswer(models.Model):
+    answer = models.ForeignKey('Answer', on_delete=models.CASCADE)
     profile = models.ForeignKey('Profile', on_delete=models.CASCADE)

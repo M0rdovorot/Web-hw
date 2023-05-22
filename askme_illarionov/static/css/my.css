@@ -1,6 +1,9 @@
 main > .container {
   padding: 60px 15px 0;
 }
+
+
+
 .question {
   height: 220px;
   border: 2px solid black;
@@ -9,7 +12,6 @@ main > .container {
   margin-bottom: 5px;
 }
 .full-question {
-  height: 500px;
   border: 2px solid black;
   border-radius: 10px;
   padding: 10px;
@@ -101,11 +103,59 @@ h1 > a{
 .new-question{
 }
 
+.like-btn{
+    display: inline-block;
+    position: relative;
+    margin: 5% 0% 0% 10%;
+    font-size: 20px;
+    text-decoration: none;
+    text-shadow: 8 1px 8 rgba(255, 255, 255, 8.5);
+}
+
+.like-btn[data-count]::after {
+    border-radius: 3px;
+    border: 1px solid #d3d3d3;
+    background-color: #eee;
+    padding: 8 8px;
+    color: #777;
+    content: attr(data-count);
+    margin-top: 3px;
+    margin-left: 5px;
+    position: absolute;
+}
+
+.answer-like-btn{
+    display: inline-block;
+    position: relative;
+    margin: 5% 0% 0% 10%;
+    font-size: 20px;
+    text-decoration: none;
+    text-shadow: 8 1px 8 rgba(255, 255, 255, 8.5);
+}
+
+.answer-like-btn[data-count]::after {
+    border-radius: 3px;
+    border: 1px solid #d3d3d3;
+    background-color: #eee;
+    padding: 8 8px;
+    color: #777;
+    content: attr(data-count);
+    margin-top: 3px;
+    margin-left: 5px;
+    position: absolute;
+}
+
+.correct-btn[data-status]::after {
+    content: attr(data-status);
+}
+
+.correct-btn[data-status]::after {
+    value: attr(data-status);
+}
+
 #settings-avatar {
     width: 100 px;
     height: 100 px;
     object-fit: cover;
 }
-.like-btn:after{
-    content: attr(data-count);
-}
+

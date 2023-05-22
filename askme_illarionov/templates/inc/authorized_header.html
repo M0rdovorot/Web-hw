@@ -19,7 +19,7 @@
         </div>
         <div class="profile">
           <div>
-            <a class="navbar-brand" href="{% url "settings" %}"><img src="{% static "img/john-wick.gif" %}" alt="" class="d-inline-block"></a>
+            <a class="navbar-brand" href="{% url "settings" %}"><img src="{{ request.user.avatar.url }}" alt="" class="d-inline-block"></a>
             <a class="nickname me-3" href="{% url "settings" %}">John Wick</a>
             <a href="{% url "settings" %}">Settings</a>
             <a href="{% url "logout" %}">Log out</a>

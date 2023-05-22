@@ -4,16 +4,11 @@
   <div class="row">
     <div class="col-3">
       <div class="question-avatar">
-          <img src="{% static "img/john-wick.gif" %}" alt="avatar">
+          <img src="{{ question.profile.avatar.url }}" alt="avatar">
       </div>
-      <div class="row like">
-        <div class="col-3 like-counter"><div class="like-text">{{num_likes}}</div></div>
-<!--        <div class="col-3" data-id="{{ question.id }}" class="like-btn" >-->
-        <div class="col-3">
-<!--          <p data-count="{{question.rating}}"></p>-->
-          <input type="button" data-id="{{ question.id }}" class="like-btn btn btn-outline-success">Like</input>
-        </div>
-      </div>
+      <p class="like-btn" data-count="{{question.rating}}" data-id="{{ question.id }}">
+        <input type="button" class="btn btn-outline-success" value="Like">
+      </p>
     </div>
     <div class="col-6">
       <h2><a href="{% url "question" question.id %}">{{ question.title }}</a></h2>

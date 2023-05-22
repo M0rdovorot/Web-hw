@@ -29,11 +29,14 @@ class RegistrationForm(forms.ModelForm):
         data = self.cleaned_data['password']
         if data != self.cleaned_data['password_check']:
             raise ValidationError('Password missmatch')
-        return
+        return self.cleaned_data['password_check']
 
-    def save(self):
+    def save(self, commit=True):
         self.cleaned_data.pop('password_check')
-        return Profile.objects.create_user(**self.cleaned_data)
+        # data = Profile.objects.create_user(**self.cleaned_data)
+        data = super().save(commit)
+        data.set_password(self.cleaned_data['password'])
+        return data
 
 
 class SettingsForm(forms.ModelForm):
@@ -53,7 +56,8 @@ class SettingsForm(forms.ModelForm):
         # user.avatar = self.cleaned_data['avatar']
         # user.first_name = self.cleaned_data['first_name']
         # user.last_name = self.cleaned_data['last_name']
-        user.set_password(self.cleaned_data['password'])
+        if self.cleaned_data['password']:
+            user.set_password(self.cleaned_data['password'])
         return user
 
     def clean_password_check(self):

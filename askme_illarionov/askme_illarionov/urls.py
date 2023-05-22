@@ -34,6 +34,8 @@ urlpatterns = [
     path('signup/', views.signup, name='signup'),
     path('logout/', views.logout, name='logout'),
     path('question_like/', views.question_like, name='question_like'),
+    path('answer_like/', views.answer_like, name='answer_like'),
+    path('mark_as_correct/', views.mark_as_correct, name='mark_as_correct'),
 ]
 
 if settings.DEBUG:

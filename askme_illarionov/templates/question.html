@@ -12,13 +12,12 @@
   <div class="row">
     <div class="col-3">
       <div class="question-avatar">
-        <img src="{% static "img/john-wick.gif" %}" alt="avatar">
+        <img src="{{ question.profile.avatar.url }}" alt="avatar">
       </div>
-      <div class="row like">
-        <div class="col-3 like-counter"><div class="like-text">{{num_likes}}</div></div>
-        <div class="col-3">
-          <button type="button" class="btn btn-outline-success">Like</button>
-        </div>
+      <div class="like">
+      <p class="like-btn" data-count="{{question.rating}}" data-id="{{ question.id }}">
+        <input type="button" class="btn btn-outline-success" value="Like">
+      </p>
       </div>
     </div>
     <div class="col-9">
@@ -32,7 +31,7 @@
 </div>
 <hr>
 <h2>Answers {{num_answers}}:</h2>
-{% for answer, num_likes in page_obj %}
+{% for answer in page_obj %}
   {% include "inc/answer_item.html" %}
 {% endfor %}
 <hr>
@@ -44,5 +43,8 @@
   {% bootstrap_form form %}
   <button type="submit" class="btn btn-primary">ASK!</button>
 </form>
-
+<script src="{% static "js/jquery-3.7.0.min.js"%}"></script>
+<script src="{% static "js/main.js"%}"></script>
 {% endblock content %}
+<script src="{% static "js/jquery-3.7.0.min.js"%}"></script>
+<script src="{% static "js/main.js"%}"></script>
