@@ -1,5 +1,8 @@
 .idea/
 venv
 *.pyc
-static/
-tempaltes/
+db.sqlite3
+__pychache__
+???
+commands
+nginx_cache

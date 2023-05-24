@@ -1,0 +1,13 @@
+{% extends "inc/base.html" %}
+{% load static %}
+{% block content %}
+<h1>Hot questions</h1>
+
+{% for question, num_answers in page_obj %}
+  {% include "inc/question_item.html" %}
+{% endfor %}
+
+{% include "inc/pagination.html" %}
+<script src="{% static "js/jquery-3.7.0.min.js"%}"></script>
+<script src="{% static "js/main.js"%}"></script>
+{% endblock content %}
