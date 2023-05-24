@@ -1,0 +1,21 @@
+{% extends "inc/base.html" %}
+
+{% load bootstrap5 %}
+{% bootstrap_css %}
+{% bootstrap_javascript %}
+{% bootstrap_messages %}
+{% load static %}
+
+{% block content %}
+<h1>Settings</h1>
+<form novalidate action="/settings/" method="post" enctype="multipart/form-data">
+  {% csrf_token %}
+  {% bootstrap_form form %}
+  <button type="submit" class="btn btn-primary">Save!</button>
+</form>
+<br>
+<div>
+<!--  id doesn't work????-->
+  <img id="settings-avatar" src="{{ request.user.avatar.url }}" height="150 px" width="150 px" >
+</div>
+{% endblock content %}
