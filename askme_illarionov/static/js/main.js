@@ -17,7 +17,7 @@ const csrftoken = getCookie('csrftoken');
 
 $(".like-btn").on('click', function (ev) {
     const request = new Request(
-        "http://127.0.0.1:8000/question_like/",
+        "http://127.0.0.1/question_like/",
         {
             headers: {
                 'X-CSRFToken': csrftoken,
@@ -39,7 +39,7 @@ $(".like-btn").on('click', function (ev) {
 
 $(".answer-like-btn").on('click', function (ev) {
     const request = new Request(
-        "http://127.0.0.1:8000/answer_like/",
+        "http://127.0.0.1/answer_like/",
         {
             headers: {
                 'X-CSRFToken': csrftoken,
@@ -58,10 +58,10 @@ $(".answer-like-btn").on('click', function (ev) {
         )
     );
 });
-
+//:8000!!!!!
 $(".correct-btn").on('click', function (ev) {
     const request = new Request(
-        "http://127.0.0.1:8000/mark_as_correct/",
+        "http://127.0.0.1/mark_as_correct/",
         {
             headers: {
                 'X-CSRFToken': csrftoken,
