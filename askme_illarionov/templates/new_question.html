@@ -1,0 +1,15 @@
+{% extends "inc/base.html" %}
+
+{% load bootstrap5 %}
+{% bootstrap_css %}
+{% bootstrap_javascript %}
+{% bootstrap_messages %}
+
+{% block content %}
+<h1>New question</h1>
+<form novalidate action="/ask/" method="post">
+  {% csrf_token %}
+  {% bootstrap_form form %}
+  <button type="submit" class="btn btn-primary">ASK!</button>
+</form>
+{% endblock content %}
